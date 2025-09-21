@@ -28,7 +28,7 @@ def greedy_search(origin, target, graph, h_func=h_sum_neighbors):
             priority = h_func(neighbor, target, graph)
             heapq.heappush(frontier, (priority, neighbor, route + [neighbor]))
 
-    return None, expansions
+    return [], expansions
 
 #Testing
 
