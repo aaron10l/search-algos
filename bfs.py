@@ -1,6 +1,6 @@
 from collections import deque
 
-def bfs(start_city, goal_city, adjacency_matrix) -> list:
+def bfs(start_city, goal_city, adjacency_matrix):
     queue = deque([start_city])
     visited = set()
 
@@ -11,10 +11,10 @@ def bfs(start_city, goal_city, adjacency_matrix) -> list:
         path.append(current_city)
 
         if current_city == goal_city:
-            return path
+            return (path, len(visited))
         
         for neighbor in adjacency_matrix[current_city]:
             if neighbor not in visited and neighbor not in queue:
                 queue.append(neighbor)
 
-    return []
+    return ([], len(visited))
