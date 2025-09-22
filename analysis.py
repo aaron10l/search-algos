@@ -1,8 +1,9 @@
 import time
 from bfs import bfs
 from dfs import dfs
-from greedy_search import greedy_search, h_sum_neighbors, h_min_neighbor
-
+from heuristics import h_sum_neighbors, h_min_neighbor
+from greedy_search import greedy_search
+from astar import astarSearch
 
 weighted_adjacency_matrix = {}
 weighted_adjacency_matrix["Oradea"] = {"Zerind": 71, "Sibiu": 151}
@@ -28,7 +29,6 @@ weighted_adjacency_matrix["Neamt"] = {"Iasi": 87}
 
 
 def time_1000_runs(search_func, start, goal, graph, heuristic=None):
-    # this function runs the specified search function 1000 times and returns the time taken for ALL 1000 RUNS.
     start_time = time.time()
     path, expansions = None, None
     for _ in range(1000):
@@ -41,7 +41,8 @@ def time_1000_runs(search_func, start, goal, graph, heuristic=None):
 
 def time_all_search_algos(START_CITY, GOAL_CITY):
     results = {}
-    print(f"Timing search algorithms from {START_CITY} to {GOAL_CITY}...")
+    print(f"Timing search algorithms from {START_CITY} to {GOAL_CITY}...\n")
+
     bfs_time, bfs_path, bfs_expansions = time_1000_runs(bfs, START_CITY, GOAL_CITY, weighted_adjacency_matrix)
     print(f"BFS took {bfs_time:.6f} seconds for 1000 runs with nodes expanded: {bfs_expansions} and path: {bfs_path}")
 
@@ -54,15 +55,28 @@ def time_all_search_algos(START_CITY, GOAL_CITY):
     greedy_min_time, greedy_min_path, greedy_min_expansions = time_1000_runs(greedy_search, START_CITY, GOAL_CITY, weighted_adjacency_matrix, heuristic=h_min_neighbor)
     print(f"Greedy (min heuristic) took {greedy_min_time:.6f} seconds for 1000 runs with nodes expanded: {greedy_min_expansions} and path: {greedy_min_path}")
 
-    # TODO: Add A* timing here when A* is implemented.
+    astar_sum_time, astar_sum_path, astar_sum_expansions = time_1000_runs(astarSearch, START_CITY, GOAL_CITY, weighted_adjacency_matrix, heuristic=h_sum_neighbors)
+    print(f"A* (sum heuristic) took {astar_sum_time:.6f} seconds for 1000 runs with nodes expanded: {astar_sum_expansions} and path: {astar_sum_path}")
+
+    astar_min_time, astar_min_path, astar_min_expansions = time_1000_runs(astarSearch, START_CITY, GOAL_CITY, weighted_adjacency_matrix, heuristic=h_min_neighbor)
+    print(f"A* (min heuristic) took {astar_min_time:.6f} seconds for 1000 runs with nodes expanded: {astar_min_expansions} and path: {astar_min_path}")
 
     results['BFS'] = bfs_time
     results['DFS'] = dfs_time
     results['Greedy_Sum'] = greedy_sum_time
     results['Greedy_Min'] = greedy_min_time
-    # TODO: Add A* results here when A* is implemented.
+    results['Astar_Sum'] = astar_sum_time
+    results['Astar_Min'] = astar_min_time
 
     return results
 
-START_CITY = "Arad"
-GOAL_CITY = "Bucharest"
+
+START_CITY = "Giurgiu"
+GOAL_CITY = "Nonexistent"
+
+
+if __name__ == "__main__":
+    results = time_all_search_algos(START_CITY, GOAL_CITY)
+    print("\nSummary of runtimes (seconds for 1000 runs):")
+    for algo, runtime in results.items():
+        print(f"{algo}: {runtime:.6f}")
